@@ -21,7 +21,7 @@ python3 -m pip install -e ".[dev]"  # optional, for tests
 skilleval eval.json --solver 'python3 solver.py'
 ```
 
-## 30-second example
+## 30-second quick start
 
 ```bash
 mkdir -p release-notes
@@ -71,6 +71,30 @@ EVAL
 skilleval eval.json
 ```
 
+Sample output from that exact example:
+
+```
+$ skilleval eval.json
+variant	checks passed	cases
+baseline	2/5	1
+with_skill	5/5	1
+
+[changelog]
+  baseline: 2/5
+    FAIL  contains "Release notes"
+    ok  contains "timeout"
+    FAIL  not_contains "lorem ipsum"
+    FAIL  regex ^# 
+    ok  exit_code 0
+  with_skill: 5/5
+    ok  contains "Release notes"
+    ok  contains "timeout"
+    ok  not_contains "lorem ipsum"
+    ok  regex ^# 
+    ok  exit_code 0
+exit: 0
+```
+
 The solver is run twice per case: once with `SKILLEVAL_SKILL` empty
 (baseline) and once pointing at the skill folder. The report shows how
 many checks each variant passed.
@@ -96,6 +120,28 @@ python3 -m pip install git+https://github.com/perron/skilleval.git
 
 This package is not published to PyPI.
 
+## Use it with your agent
+
+You can point a coding agent at this repository and ask it to use the tool, adapt it, or write a small tool in the same style. That works with Claude Code, Codex, Cursor, Grok Bot, and anything else that can clone a git repo and run a Python CLI.
+
+A short prompt you can paste:
+
+> Clone https://github.com/perron/skilleval, install it, and run ./eval.json with the bundled stub solver. Explain the baseline vs with_skill table. Do not call a model API; this harness is deterministic and has no LLM judge in this release.
+
+If you want a new tool in this style, say so explicitly: one job, standard-library Python, pytest first, no API key, and an honest Limits section.
+
+## Contributing / how you can help
+
+Bug reports, tight tests, and small honest features are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to run the suite and for pull request guidelines.
+
+Good first issues:
+
+- Allow a per-case `timeout` in the eval file.
+- Add a junit-xml or markdown report format for CI logs.
+- Support a `files` fixture that copies a binary fixture without going through UTF-8 text.
+
+If you are unsure whether an idea fits, open an issue before writing a large patch.
+
 ## License
 
-MIT. See `LICENSE`. Please read `SECURITY.md` before filing a vulnerability report.
+MIT. See `LICENSE`. Please read `SECURITY.md` before filing a vulnerability report. Agents should also read `AGENTS.md`.
