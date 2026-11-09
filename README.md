@@ -11,8 +11,13 @@ in this first release on purpose, so CI stays hermetic.
 
 ## Install
 
+Python 3.10 or later.
+
+From a checkout:
+
 ```bash
-python3 -m pip install -e .
+python3 -m pip install .
+python3 -m pip install -e ".[dev]"  # optional, for tests
 skilleval eval.json --solver 'python3 solver.py'
 ```
 
@@ -75,3 +80,22 @@ many checks each variant passed.
 Motivated by public A/B tests of skills with and without a file, and by
 coding-agent evals that showed where a rule lives changes follow-through.
 Original harness; no source was copied from any eval framework.
+
+## Limits
+
+- No model API key is required. You bring a solver command — a stub script in tests, or your own agent CLI later.
+- An optional LLM judge is not wired in this release, so CI stays hermetic.
+- The solver runs as a local subprocess with your user permissions in a temporary working directory. Treat it like any other script you run.
+- `--timeout` applies to each solver invocation and must be a positive integer.
+
+From GitHub you can also install with:
+
+```bash
+python3 -m pip install git+https://github.com/perron/skilleval.git
+```
+
+This package is not published to PyPI.
+
+## License
+
+MIT. See `LICENSE`. Please read `SECURITY.md` before filing a vulnerability report.

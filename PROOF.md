@@ -1,6 +1,10 @@
 # skilleval proof
 
-Captured 2026-11-09 12:15 PST on the box.
+Captured 2026-11-09 13:27 PST.
+
+Fresh-venv install: `pip install .` succeeded and `skilleval --version` printed `skilleval 0.1.1`.
+
+Tests: 14 passed in 1.32s
 
 ```
 variant	checks passed	cases

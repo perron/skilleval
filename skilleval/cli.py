@@ -9,11 +9,12 @@ import re
 import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 def load_eval(path: Path) -> dict[str, Any]:
@@ -177,7 +178,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     path = Path(args.eval_file).resolve()
     if not path.is_file():
-        print(f"error: file not found: {path}")
+        print(f"error: file not found: {path}", file=sys.stderr)
+        return 1
+    if args.timeout <= 0:
+        print("error: --timeout must be positive", file=sys.stderr)
         return 1
     try:
         data = load_eval(path)
@@ -190,8 +194,8 @@ def main(argv: list[str] | None = None) -> int:
             solver = ["bash", "-lc", bind_command(str(solver_cmd), path.parent)]
         results = [run_case(case, solver, path.parent, args.timeout) for case in data["cases"]]
         summary = summarize(results)
-    except (ValueError, json.JSONDecodeError, subprocess.TimeoutExpired) as exc:
-        print(f"error: {exc}")
+    except (ValueError, json.JSONDecodeError, OSError, subprocess.TimeoutExpired) as exc:
+        print(f"error: {exc}", file=sys.stderr)
         return 1
     if args.json:
         print(json.dumps(summary, indent=2))
